@@ -1,0 +1,30 @@
+# Build tools
+node_modules
+npm-debug.log
+typings
+coverage
+report
+
+# Build
+dist
+logipharma-*/
+
+# Intellij IDEA
+.idea
+*.iml
+.editorconfig
+
+# Generated sources
+*.css
+src/**/*.js
+src/**/*.js.map
+sample/**/*.js
+sample/**/*.js.map
+config/angular.test.setup.js
+config/angular.test.setup.js.map
+
+# Do not ignore tests specs
+!app/**/*.spec.js
+
+# Mac
+.DS_Store
