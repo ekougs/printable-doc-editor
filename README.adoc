@@ -1,1 +1,8 @@
 # Printable document editor
+
+## TODO
+### Move jade to pug once its stable version is available
+
+- Remove Jade dev dep
+- Add Pug dependencies
+- Rewrite build:html script

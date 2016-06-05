@@ -22,6 +22,8 @@ sample/**/*.js
 sample/**/*.js.map
 config/angular.test.setup.js
 config/angular.test.setup.js.map
+src/**/*.html
+sample/**/*.html
 
 # Do not ignore tests specs
 !app/**/*.spec.js
