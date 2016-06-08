@@ -1,0 +1,42 @@
+@import "../assets/stylesheets/variables.scss";
+@import '../../node_modules/dragula/dist/dragula.css';
+
+div.editor-container {
+  width: 100%;
+  min-height: 250px;
+}
+
+div.editor-toolbar {
+  background: $editor-toolbar-bg-color;
+  padding: 4px 6px;
+  border: $editor-border;
+  border-top-left-radius: $editor-border-radius;
+  border-top-right-radius: $editor-border-radius;
+  border-bottom-width: 0;
+}
+
+div.editor-toolbar > .btn:first-child {
+  margin-left: $editor-toolbar-btn-margin;
+}
+
+div.editor-toolbar > .btn:last-child {
+  margin-right: $editor-toolbar-btn-margin;
+}
+
+div.editor-toolbar .btn {
+  margin-left: $editor-toolbar-btn-margin;
+  margin-right: $editor-toolbar-btn-margin;
+  background-color: $editor-toolbar-btn-bg-color;
+}
+
+div.editor-body {
+  width: 100%;
+  border: $editor-border;
+  border-bottom-left-radius: $editor-border-radius;
+  border-bottom-right-radius: $editor-border-radius;
+  min-height: 220px;
+}
+
+div.text-element {
+  position: absolute;
+}

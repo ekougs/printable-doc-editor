@@ -1,15 +1,16 @@
-- var scripts = ["../node_modules/es6-shim/es6-shim.min.js"]
-- scripts.push("../node_modules/zone.js/dist/zone.js")
-- scripts.push("../node_modules/reflect-metadata/Reflect.js")
-- scripts.push("../node_modules/systemjs/dist/system.src.js")
-- scripts.push("./systemjs.config.js")
+- var scripts = ["node_modules/es6-shim/es6-shim.min.js"]
+- scripts.push("node_modules/zone.js/dist/zone.js")
+- scripts.push("node_modules/reflect-metadata/Reflect.js")
+- scripts.push("node_modules/systemjs/dist/system.src.js")
+- scripts.push("sample/systemjs.config.js")
 
 doctype html
 html
     head
         title= "Card and Flier WYSIWYG Editor Sample"
+        base(href="/")
         meta(name="viewport",content="width=device-width, initial-scale=1")
-        link(rel="stylesheet",href="main.css")
+        link(rel="stylesheet",href="sample/main.css")
         each scriptUrl in scripts
             script(src=scriptUrl)
 

@@ -1,0 +1,12 @@
+div.card-txt(
+    [ngClass]="{edit: edit, readOnly: !edit}",
+    [style.top]="state.top",
+    [style.left]="state.left",
+    [style.width]="state.width",
+    [style.height]="state.height",
+    (input)="updateValue($event)",
+    (click)="editMode(textComp)",
+    (blur)="readOnlyMode(textComp)",
+    #textComp=""
+        )
+        {{value}}

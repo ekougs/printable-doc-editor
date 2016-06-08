@@ -16,13 +16,13 @@ logipharma-*/
 
 # Generated sources
 *.css
-src/**/*.js
-src/**/*.js.map
+print-editor/**/*.js
+print-editor/**/*.js.map
 sample/**/*.js
 sample/**/*.js.map
 config/angular.test.setup.js
 config/angular.test.setup.js.map
-src/**/*.html
+print-editor/**/*.html
 sample/**/*.html
 
 # Do not ignore tests specs

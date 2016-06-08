@@ -1,0 +1,6 @@
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+$editor-border:1px solid $input-border;
+$editor-toolbar-bg-color:linear-gradient(to top, darken($gray-lighter, 5%), lighten($gray-lighter, 5%));
+$editor-toolbar-btn-bg-color:lighten($btn-default-border, 25%);
+$editor-toolbar-btn-margin: 2px;
+$editor-border-radius: $btn-border-radius-base;

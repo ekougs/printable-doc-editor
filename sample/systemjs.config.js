@@ -2,15 +2,16 @@
 
     // map tells the System loader where to look for things
     var map = {
-        'src': '../src', // 'dist',
-        'rxjs': '../node_modules/rxjs',
-        '@angular': '../node_modules/@angular',
-        'lodash': '../node_modules/lodash/lodash.js'
+        'app': 'sample/app',
+        'rxjs': 'node_modules/rxjs',
+        '@angular': 'node_modules/@angular',
+        'lodash': 'node_modules/lodash/lodash.js'
     };
 
     // packages tells the System loader how to load when no filename and/or no extension
     var packages = {
-        'src': {defaultExtension: 'js'},
+        'print-editor': {defaultExtension: 'js'},
+        'ng2-dragula': {defaultExtension: 'js'},
         'app': {main: 'boot.js', defaultExtension: 'js'},
         'rxjs': {defaultExtension: 'js'}
     };

@@ -1,0 +1,8 @@
+div.editor-container
+    div.editor-toolbar
+        button.btn.btn-default(type="button",aria-label="Add Image")
+            span.glyphicon.glyphicon-picture
+        button.btn.btn-default(type="button",aria-label="Add Text", (click)="openTextElementFromAction()")
+            span.glyphicon.glyphicon-text-background
+    div.wrapper.editor-body((dblclick)='openTextElementFromDblClick($event)')
+        div(#editorBody="")
