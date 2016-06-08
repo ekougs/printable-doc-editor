@@ -40,6 +40,8 @@ export class TextComponent implements AfterViewInit{
     }
 
     readOnlyMode(textComp) {
+        if (!this.value || this.value === "") {
+        }
         textComp.contentEditable = true;
         this.edit = false;
     }

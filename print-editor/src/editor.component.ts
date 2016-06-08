@@ -8,35 +8,40 @@ import {
     ViewChild
 } from "@angular/core";
 import {TextComponent, VIEW_STATE_TOKEN, TextComponentState} from "./text/text.component";
+import {PositionService, Point} from "./position.service";
 
 @Component({
                selector: 'editor',
                templateUrl: 'editor.component.html',
                styleUrls: ['editor.component.css'],
+               providers: [PositionService],
                directives: [TextComponent]
            })
 export class EditorComponent {
     @ViewChild('editorBody', {read: ViewContainerRef}) editorBody:ViewContainerRef;
+    private elementCount:number = 0;
 
-    constructor(private _viewContainer:ViewContainerRef, private _resolver:ComponentResolver) {
+    constructor(private _viewContainer:ViewContainerRef, private _resolver:ComponentResolver,
+                private positionService:PositionService) {
     }
 
     openTextElementFromDblClick(event) {
-        console.log(event);
-        var state = {
-            left: EditorComponent.getPxSize(event.offsetX),
-            top: EditorComponent.getPxSize(event.offsetY)
+        let position:Point = this.positionService.getClickPosition(event);
+        console.log(position);
+        let state = {
+            left: EditorComponent.getPxSize(position.x),
+            top: EditorComponent.getPxSize(position.y)
         };
-        this.openTextElement(state)
+        this.openTextElement(state);
     }
 
     openTextElementFromAction(event) {
         console.log(event);
-        var state = {
+        let state = {
             left: EditorComponent.getPxSize(event.offsetX),
             top: EditorComponent.getPxSize(event.offsetY)
         };
-        this.openTextElement(state)
+        this.openTextElement(state);
     }
 
     openTextElement(state:TextComponentState) {
