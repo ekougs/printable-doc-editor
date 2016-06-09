@@ -29,10 +29,12 @@ div.editor-toolbar .btn {
 }
 
 div.editor-body {
+  position:relative;
   width: 100%;
   border: $editor-border;
   border-bottom-left-radius: $editor-border-radius;
   border-bottom-right-radius: $editor-border-radius;
+  // TODO à mettre en variable
   min-height: 220px;
 }
 

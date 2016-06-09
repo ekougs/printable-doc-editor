@@ -1,12 +1,14 @@
 import {Component, ViewContainerRef, ComponentRef, ComponentResolver, provide, ViewChild} from "@angular/core";
 import {TextComponent, TextComponentState, VIEW_STATE_TOKEN, ON_VALUE_CHANGED_TOKEN} from "./text/text.component";
-import {ComponentService, Point} from "./component.service";
+import {ComponentService} from "./component/component.service";
+import {EmConverterProvider} from "./component/length-converter";
+import {InjectionService} from "./inject/injection.service";
 
 @Component({
                selector: 'editor',
                templateUrl: 'editor.component.html',
                styleUrls: ['editor.component.css'],
-               providers: [ComponentService],
+               providers: [ComponentService, EmConverterProvider, InjectionService],
                directives: [TextComponent]
            })
 export class EditorComponent {
@@ -14,12 +16,13 @@ export class EditorComponent {
     private textChildren:{[guid:string]:ComponentRef<TextComponent>} = {};
 
     constructor(private _viewContainer:ViewContainerRef, private _resolver:ComponentResolver,
-                private _service:ComponentService) {
+                private _compService:ComponentService, private _injService:InjectionService) {
     }
 
-    openTextElementFromDblClick(event) {
-        let position:Point = this._service.getClickPosition(event);
-        let state = this.textComponentState(position.x, position.y);
+    openTextElementFromDblClick(clickEvent) {
+        let positionWithinBounds = this._compService.getPositionWithinParentElement(clickEvent,
+                                                                                    TextComponent.DEFAULT_SIZE);
+        let state = this.textComponentState(positionWithinBounds.x, positionWithinBounds.y);
         this.openTextElement(state);
     }
 
@@ -30,18 +33,19 @@ export class EditorComponent {
 
     private textComponentState(left:number, top:number):TextComponentState {
         return {
-            guid: this._service.guid(),
-            left: this._service.pxSize(left),
-            top: this._service.pxSize(top)
+            guid: this._injService.guid(),
+            left: this._compService.pxSize(left),
+            top: this._compService.pxSize(top)
         };
     }
 
     openTextElement(state:TextComponentState) {
         this._resolver.resolveComponent(TextComponent).then(textCompFactory => {
+            let onTextValueChanged = this.onTextValueChanged.bind(this);
             let textComponentContext =
-                this._service.injector(this._viewContainer.injector,
-                                       provide(VIEW_STATE_TOKEN, {useValue: state}),
-                                       provide(ON_VALUE_CHANGED_TOKEN, {useValue: this.onTextValueChanged.bind(this)}));
+                this._injService.injector(this._viewContainer.injector,
+                                          provide(VIEW_STATE_TOKEN, {useValue: state}),
+                                          provide(ON_VALUE_CHANGED_TOKEN, {useValue: onTextValueChanged}));
             this.textChildren[state.guid] =
                 this.editorBody.createComponent(textCompFactory, undefined, textComponentContext);
         });

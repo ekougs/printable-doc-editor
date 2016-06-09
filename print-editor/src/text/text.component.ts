@@ -1,4 +1,7 @@
 import {Component, OpaqueToken, Inject, AfterViewInit, ElementRef, ViewChild} from "@angular/core";
+import {Size} from "../component/size";
+import {Length} from "../component/length";
+import {LengthUnit} from "../component/length-unit";
 
 export const VIEW_STATE_TOKEN:OpaqueToken = new OpaqueToken('textComponentViewState');
 export const ON_VALUE_CHANGED_TOKEN:OpaqueToken = new OpaqueToken('textComponentOnValueChanged');
@@ -17,6 +20,7 @@ export interface TextComponentState {
                styleUrls: ['text.component.css']
            })
 export class TextComponent implements AfterViewInit {
+    static DEFAULT_SIZE:Size = new Size(new Length(150, LengthUnit.px), new Length(1.9, LengthUnit.em));
     @ViewChild('textComp', {read: ElementRef}) private textCompRef:ElementRef;
     private edit:boolean = true;
 
