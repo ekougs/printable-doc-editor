@@ -4,7 +4,6 @@ div.card-txt(
     [style.left]="state.left",
     [style.width]="state.width",
     [style.height]="state.height",
-    (input)="updateValue($event)",
     (click)="editMode(textComp)",
     (blur)="readOnlyMode(textComp)",
     #textComp=""

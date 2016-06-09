@@ -1,90 +1,56 @@
-import {
-    Component,
-    ViewContainerRef,
-    ComponentResolver,
-    ReflectiveInjector,
-    Injector,
-    provide,
-    ViewChild
-} from "@angular/core";
-import {TextComponent, VIEW_STATE_TOKEN, TextComponentState} from "./text/text.component";
-import {PositionService, Point} from "./position.service";
+import {Component, ViewContainerRef, ComponentRef, ComponentResolver, provide, ViewChild} from "@angular/core";
+import {TextComponent, TextComponentState, VIEW_STATE_TOKEN, ON_VALUE_CHANGED_TOKEN} from "./text/text.component";
+import {ComponentService, Point} from "./component.service";
 
 @Component({
                selector: 'editor',
                templateUrl: 'editor.component.html',
                styleUrls: ['editor.component.css'],
-               providers: [PositionService],
+               providers: [ComponentService],
                directives: [TextComponent]
            })
 export class EditorComponent {
     @ViewChild('editorBody', {read: ViewContainerRef}) editorBody:ViewContainerRef;
-    private elementCount:number = 0;
+    private textChildren:{[guid:string]:ComponentRef<TextComponent>} = {};
 
     constructor(private _viewContainer:ViewContainerRef, private _resolver:ComponentResolver,
-                private positionService:PositionService) {
+                private _service:ComponentService) {
     }
 
     openTextElementFromDblClick(event) {
-        let position:Point = this.positionService.getClickPosition(event);
-        console.log(position);
-        let state = {
-            left: EditorComponent.getPxSize(position.x),
-            top: EditorComponent.getPxSize(position.y)
-        };
+        let position:Point = this._service.getClickPosition(event);
+        let state = this.textComponentState(position.x, position.y);
         this.openTextElement(state);
     }
 
     openTextElementFromAction(event) {
-        console.log(event);
-        let state = {
-            left: EditorComponent.getPxSize(event.offsetX),
-            top: EditorComponent.getPxSize(event.offsetY)
-        };
+        let state = this.textComponentState(event.x, event.y);
         this.openTextElement(state);
+    }
+
+    private textComponentState(left:number, top:number):TextComponentState {
+        return {
+            guid: this._service.guid(),
+            left: this._service.pxSize(left),
+            top: this._service.pxSize(top)
+        };
     }
 
     openTextElement(state:TextComponentState) {
         this._resolver.resolveComponent(TextComponent).then(textCompFactory => {
-            this.editorBody.createComponent(textCompFactory, undefined,
-                                            EditorComponent.getComponentContext(this._viewContainer.injector, state));
+            let textComponentContext =
+                this._service.injector(this._viewContainer.injector,
+                                       provide(VIEW_STATE_TOKEN, {useValue: state}),
+                                       provide(ON_VALUE_CHANGED_TOKEN, {useValue: this.onTextValueChanged.bind(this)}));
+            this.textChildren[state.guid] =
+                this.editorBody.createComponent(textCompFactory, undefined, textComponentContext);
         });
     }
 
-    private static getComponentContext(injector:Injector, state:TextComponentState):Injector {
-        let reflectiveInjector =
-            ReflectiveInjector.resolveAndCreate([
-                                                    provide(Injector, {useValue: injector}),
-                                                    provide(VIEW_STATE_TOKEN, {useValue: state})
-                                                ]);
-        return new ComposedInjector(injector, reflectiveInjector);
-    }
-
-    private static getPxSize(size):String {
-        return size + 'px';
-    }
-}
-
-class ComposedInjector extends Injector {
-    constructor(private _injector1:Injector, private _injector2:Injector) {
-        super();
-    }
-
-    get(token:any, notFoundValue?:any) {
-        let result = undefined;
-        try {
-            result = this._injector1.get(token, notFoundValue);
-        } catch (e) {
-
+    private onTextValueChanged(state:TextComponentState, value:string) {
+        // Text component without value is not useful and vainly retains space
+        if (!value || "" === value.trim()) {
+            this.textChildren[state.guid].destroy();
         }
-        try {
-            result = this._injector2.get(token, notFoundValue);
-        } catch (e) {
-
-        }
-        if (result === undefined) {
-            throw new Error("No provider for " + token)
-        }
-        return result;
     }
 }

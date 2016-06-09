@@ -1,15 +1,33 @@
-import {Injectable} from "@angular/core";
+import {Injectable, Injector, ReflectiveInjector, Provider} from "@angular/core";
 
 export interface Point {
     x:number;
     y:number;
 }
 
-// Special thanks to https://www.kirupa.com/snippets/move_element_to_click_position.htm
-// It would have been much longer to implement this service without this blog post
 @Injectable()
-export class PositionService {
+export class ComponentService {
+    pxSize(size):string {
+        return size + 'px';
+    }
 
+    injector(baseInjector:Injector, ...providers:Provider[]):Injector {
+        let reflectiveInjector = ReflectiveInjector.resolveAndCreate(providers);
+        return new ComposedInjector(baseInjector, reflectiveInjector);
+    }
+
+    guid():string {
+        let s4 = this.s4;
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    private s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+
+
+    // Special thanks to https://www.kirupa.com/snippets/move_element_to_click_position.htm
+    // It would have been much longer to implement this service without this blog post
     getClickPosition(clickEvent):Point {
         var parent = clickEvent.currentTarget;
         let parentPosition = this.getPosition(parent);
@@ -46,5 +64,29 @@ export class PositionService {
             x: xPosition,
             y: yPosition
         };
+    }
+}
+
+class ComposedInjector extends Injector {
+    constructor(private _injector1:Injector, private _injector2:Injector) {
+        super();
+    }
+
+    get(token:any, notFoundValue?:any) {
+        let result = undefined;
+        try {
+            result = this._injector1.get(token, notFoundValue);
+        } catch (e) {
+
+        }
+        try {
+            result = this._injector2.get(token, notFoundValue);
+        } catch (e) {
+
+        }
+        if (result === undefined) {
+            throw new Error("No provider for " + token)
+        }
+        return result;
     }
 }

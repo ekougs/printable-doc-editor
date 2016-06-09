@@ -1,12 +1,14 @@
-import {Component, OpaqueToken, Inject, AfterViewInit, ElementRef, forwardRef, ViewChild} from "@angular/core";
+import {Component, OpaqueToken, Inject, AfterViewInit, ElementRef, ViewChild} from "@angular/core";
 
-export const VIEW_STATE_TOKEN:OpaqueToken = new OpaqueToken('suggestComponentViewState');
+export const VIEW_STATE_TOKEN:OpaqueToken = new OpaqueToken('textComponentViewState');
+export const ON_VALUE_CHANGED_TOKEN:OpaqueToken = new OpaqueToken('textComponentOnValueChanged');
 
 export interface TextComponentState {
-    top:String;
-    left:String;
-    width?:String;
-    height?:String;
+    guid:string;
+    top:string;
+    left:string;
+    width?:string;
+    height?:string;
 }
 
 @Component({
@@ -14,23 +16,18 @@ export interface TextComponentState {
                templateUrl: 'text.component.html',
                styleUrls: ['text.component.css']
            })
-export class TextComponent implements AfterViewInit{
+export class TextComponent implements AfterViewInit {
     @ViewChild('textComp', {read: ElementRef}) private textCompRef:ElementRef;
-    private value:String;
-    private firstBag:String = "first-bag";
-    private edit:Boolean = true;
+    private edit:boolean = true;
 
-    constructor(@Inject(VIEW_STATE_TOKEN) private state:TextComponentState) {
+    constructor(@Inject(VIEW_STATE_TOKEN) private state:TextComponentState,
+                @Inject(ON_VALUE_CHANGED_TOKEN) private onValueChanged:(TextComponentState, String)=>void) {
         state.width = 150 + 'px';
         state.height = 1.9 + 'em';
     }
 
     ngAfterViewInit() {
         this.editMode(this.textCompRef.nativeElement);
-    }
-
-    updateValue(event) {
-        this.value = event.target.innerText;
     }
 
     editMode(textComp) {
@@ -40,8 +37,7 @@ export class TextComponent implements AfterViewInit{
     }
 
     readOnlyMode(textComp) {
-        if (!this.value || this.value === "") {
-        }
+        this.onValueChanged(this.state, textComp.innerText);
         textComp.contentEditable = true;
         this.edit = false;
     }
