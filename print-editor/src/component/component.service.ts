@@ -2,7 +2,6 @@ import {Injectable} from "@angular/core";
 import {Point} from "./point";
 import {Size} from "./size";
 import {BoundingRectangle} from "./bounding-rectangle";
-import {LengthUnit} from "./length-unit";
 import {Length} from "./length";
 import {EmConverterProvider, EmConverter} from "./length-converter";
 
@@ -64,8 +63,8 @@ export class ComponentService {
     getParentBoundingRectangle(clickEvent):BoundingRectangle {
         let parentPosition:Point = this.getParentPosition(event);
         let boundingClientRect = clickEvent.target.getBoundingClientRect();
-        let boundsSize = new Size(new Length(boundingClientRect.width, LengthUnit.px),
-            new Length(boundingClientRect.height, LengthUnit.px));
+        let boundsSize = new Size(new Length(boundingClientRect.width),
+            new Length(boundingClientRect.height));
         return new BoundingRectangle(parentPosition, boundsSize);
     }
 

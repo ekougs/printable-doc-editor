@@ -2,7 +2,7 @@ import {LengthUnit} from "./length-unit";
 import {EmConverter} from "./length-converter";
 
 export class Length {
-    constructor(private _length:number, private unit:LengthUnit) {
+    constructor(private _length:number, private unit=LengthUnit.px) {
     }
     
     sizeInPx(converter:EmConverter):number {

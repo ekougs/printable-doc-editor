@@ -9,7 +9,15 @@ export class Size {
         return this._width.sizeInPx(converter);
     }
     
+    widthAndUnit():string {
+        return this._width.toString();
+    }
+    
     height(converter:EmConverter):number {
         return this._height.sizeInPx(converter);
+    }
+
+    heightAndUnit():string {
+        return this._height.toString();
     }
 }

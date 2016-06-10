@@ -5,6 +5,7 @@ import {LengthUnit} from "../component/length-unit";
 
 export const VIEW_STATE_TOKEN:OpaqueToken = new OpaqueToken('textComponentViewState');
 export const ON_VALUE_CHANGED_TOKEN:OpaqueToken = new OpaqueToken('textComponentOnValueChanged');
+export const ON_FOCUS_TOKEN:OpaqueToken = new OpaqueToken('textComponentOnFocus');
 
 export interface TextComponentState {
     guid:string;
@@ -20,14 +21,15 @@ export interface TextComponentState {
                styleUrls: ['text.component.css']
            })
 export class TextComponent implements AfterViewInit {
-    static DEFAULT_SIZE:Size = new Size(new Length(150, LengthUnit.px), new Length(1.9, LengthUnit.em));
+    static DEFAULT_SIZE:Size = new Size(new Length(150), new Length(1.9, LengthUnit.em));
     @ViewChild('textComp', {read: ElementRef}) private textCompRef:ElementRef;
     private edit:boolean = true;
 
     constructor(@Inject(VIEW_STATE_TOKEN) private state:TextComponentState,
-                @Inject(ON_VALUE_CHANGED_TOKEN) private onValueChanged:(TextComponentState, String)=>void) {
-        state.width = 150 + 'px';
-        state.height = 1.9 + 'em';
+                @Inject(ON_VALUE_CHANGED_TOKEN) private onValueChanged:(TextComponentState, String)=>void,
+                @Inject(ON_FOCUS_TOKEN) private onFocus:(TextComponentState)=>void) {
+        state.width = TextComponent.DEFAULT_SIZE.widthAndUnit();
+        state.height = TextComponent.DEFAULT_SIZE.heightAndUnit();
     }
 
     ngAfterViewInit() {

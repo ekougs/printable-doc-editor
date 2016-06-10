@@ -6,6 +6,7 @@ div.card-txt(
     [style.height]="state.height",
     (click)="editMode(textComp)",
     (blur)="readOnlyMode(textComp)",
+    (focus)="onFocus(state)",
     #textComp=""
         )
         {{value}}
