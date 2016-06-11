@@ -7,9 +7,9 @@
     distApp();
 
     function distApp() {
-        cpx.copy('*.{html,css,js,json}', 'dist');
-        cpx.copy('src/*.{html,css,js,json}', 'dist/src');
-        cpx.copy('src/app/**/*.{html,css,js,js.map,json}', 'dist/src/app', null, delTests);
+        cpx.copy('sample/index.html', 'dist');
+        cpx.copy('print-editor/**/*.js', 'dist/print-editor', null, delTests);
+        cpx.copy('sample/**/*.{js,css}', 'dist/sample');
     }
 
     function delTests() {
