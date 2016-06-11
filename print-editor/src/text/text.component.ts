@@ -2,6 +2,7 @@ import {Component, OpaqueToken, Inject, AfterViewInit, ElementRef, ViewChild} fr
 import {Size} from "../component/size";
 import {Length} from "../component/length";
 import {LengthUnit} from "../component/length-unit";
+import {DraggableDirective} from "../draggable.directive";
 
 export const VIEW_STATE_TOKEN:OpaqueToken = new OpaqueToken('textComponentViewState');
 export const ON_VALUE_CHANGED_TOKEN:OpaqueToken = new OpaqueToken('textComponentOnValueChanged');
@@ -18,7 +19,8 @@ export interface TextComponentState {
 @Component({
                selector: 'text',
                templateUrl: 'text.component.html',
-               styleUrls: ['text.component.css']
+               styleUrls: ['text.component.css'],
+               directives: [DraggableDirective]
            })
 export class TextComponent implements AfterViewInit {
     static DEFAULT_SIZE:Size = new Size(new Length(150), new Length(1.9, LengthUnit.em));
@@ -44,7 +46,7 @@ export class TextComponent implements AfterViewInit {
 
     readOnlyMode(textComp) {
         this.onValueChanged(this.state, textComp.innerText);
-        textComp.contentEditable = true;
+        textComp.contentEditable = false;
         this.edit = false;
     }
 }

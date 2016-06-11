@@ -29,7 +29,7 @@ div.editor-toolbar .btn {
 }
 
 div.editor-body {
-  position:relative;
+  position: relative;
   width: 100%;
   border: $editor-border;
   border-bottom-left-radius: $editor-border-radius;
@@ -40,4 +40,22 @@ div.editor-body {
 
 div.text-element {
   position: absolute;
+}
+
+:host /deep/ {
+
+  [draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+  }
+
+  .dragging {
+    opacity: 0.4;
+    background-color: $input-bg-disabled !important;
+  }
 }

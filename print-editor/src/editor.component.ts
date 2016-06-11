@@ -29,8 +29,8 @@ export class EditorComponent {
     }
 
     openTextElementFromDblClick(clickEvent) {
-        let positionWithinBounds = this._compService.getPositionWithinParentElement(clickEvent,
-                                                                                    TextComponent.DEFAULT_SIZE);
+        let positionWithinBounds = 
+            this._compService.getPositionWithinParentElement(clickEvent, TextComponent.DEFAULT_SIZE);
         let state = this.textComponentState(positionWithinBounds.x, positionWithinBounds.y);
         this.openTextElement(state);
     }

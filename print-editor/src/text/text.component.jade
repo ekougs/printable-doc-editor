@@ -7,6 +7,7 @@ div.card-txt(
     (click)="editMode(textComp)",
     (blur)="readOnlyMode(textComp)",
     (focus)="onFocus(state)",
+    [draggable]="",
     #textComp=""
         )
         {{value}}
