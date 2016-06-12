@@ -7,6 +7,8 @@
     "url": "git+https://github.com/ekougs/printable-doc-editor"
   },
   "scripts": {
+    "typings:install": "typings install",
+    "prebuild:js": "npm run typings:install",
     "build:js": "tsc",
     "build:js:w": "tsc -w",
     "build:css:sample": "node-sass --output sample sample",
