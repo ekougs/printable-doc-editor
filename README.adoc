@@ -1,5 +1,10 @@
 # Printable document editor
 
+## Run karma tests
+:hardbreaks:
+`npm test`
+To display coverage after testing `npm run coverage` and get to `localhost:9875`
+
 ## TODO
 ### Move jade to pug once its stable version is available
 

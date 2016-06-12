@@ -3,11 +3,15 @@ import {Injectable} from "@angular/core";
 @Injectable()
 export class EmConverterProvider {
     converter(context):EmConverter {
-        return new EmConverter(context);
+        return new ActualEmConverter(context);
     }
 }
 
-export class EmConverter {
+export interface EmConverter {
+    toPx(lengthInEm:number):number;
+}
+
+export class ActualEmConverter {
     constructor(private context?) {
     }
 

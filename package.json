@@ -30,6 +30,8 @@
     "e2e": "npm-run-all -p daemon-http-server:test protractor:local ; forever stop config/test-server.js",
     "pretest": "npm run build",
     "test": "karma start config/karma.conf.js",
+    "posttest": "node_modules/.bin/remap-istanbul -i report/report-json/coverage-final.json -o coverage -t html",
+    "coverage": "http-server -c-1 -o -p 9875 ./coverage",
     "clean": "del -f dist ",
     "predist": "npm-run-all -p build clean",
     "dist": "node config/bin/create-dist.js"

@@ -11,8 +11,7 @@ module.exports = function (config) {
         reporters: ['progress', 'coverage'],
 
         preprocessors: {
-            'src/app/**/!(*.spec)+(.js)': ['coverage'],
-            'src/app/**/*.js': ['sourcemap']
+            'print-editor/src/**/*.js': ['coverage', 'sourcemap']
         },
 
         // Generate json used for remap-istanbul
@@ -33,17 +32,11 @@ module.exports = function (config) {
             'node_modules/zone.js/dist/fake-async-test.js',
             'node_modules/systemjs/dist/system.src.js',
 
-            'sample/systemjs.config.js',
+            'config/systemjs.config.js',
             'config/karma-test-shim.js',
 
-            {pattern: 'print-editor/src/**/*.js', included: false},
-            {pattern: 'sample/**/*.js', included: false},
+            {pattern: 'print-editor/**/*.js', included: false},
             {pattern: 'config/angular.test.setup.js', included: false},
-
-            // paths loaded via Angular's component compiler
-            // (these paths need to be rewritten, see proxies section)
-            // {pattern: 'print-editor/src/**/*.html', included: false},
-            // {pattern: 'print-editor/src/**/*.css', included: false},
 
             // paths to support debugging with source maps in dev tools
             {pattern: 'print-editor/src/**/*.ts', included: false, watched: false}
@@ -53,7 +46,6 @@ module.exports = function (config) {
         proxies: {
             // required for component assests fetched by Angular's compiler
             "/config/": "/base/config/",
-            "/sample/": "/base/sample/",
             "/print-editor/": "/base/print-editor/",
             "/node_modules/": "/base/node_modules/"
         },

@@ -2,7 +2,6 @@
 
     // map tells the System loader where to look for things
     var map = {
-        'app': 'sample/app',
         'rxjs': 'node_modules/rxjs',
         '@angular': 'node_modules/@angular',
         'lodash': 'node_modules/lodash/lodash.js'
@@ -11,7 +10,6 @@
     // packages tells the System loader how to load when no filename and/or no extension
     var packages = {
         'print-editor': {defaultExtension: 'js'},
-        'app': {main: 'boot.js', defaultExtension: 'js'},
         'rxjs': {defaultExtension: 'js'}
     };
 
@@ -19,10 +17,8 @@
         '@angular/common',
         '@angular/compiler',
         '@angular/core',
-        '@angular/http',
         '@angular/platform-browser',
-        '@angular/platform-browser-dynamic',
-        '@angular/router'
+        '@angular/platform-browser-dynamic'
     ];
 
     // add package entries for angular packages in the form '@angular/common': { main: 'index.js', defaultExtension: 'js' }
@@ -41,8 +37,5 @@
     }
 
     System.config(config);
-    System.import('app').catch(function (err) {
-        console.error(err);
-    });
 
 })(this);
