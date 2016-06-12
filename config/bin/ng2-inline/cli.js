@@ -49,7 +49,6 @@
 				process.exit(1);
 			} else {
 				files.forEach((file) => {
-        			console.error("path", file);
 					var target = path.join(process.cwd(), file);
 					var content = fs.readFileSync(target);
 					if (content) {
