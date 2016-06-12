@@ -21,7 +21,7 @@
     "build:html:sample:w": "jade -w sample",
     "build:html:print-editor:w": "jade -w print-editor",
     "build:html:w": "npm-run-all -p build:html:sample:w build:html:print-editor:w",
-    "inlineTemplatesStyles": "node config/bin/ng2-inline/cli.js   -o ./ 'print-editor/**/*.js'",
+    "inlineTemplatesStyles": "node config/bin/ng2-inline/cli.js  -o ./ 'print-editor/**/*.js'",
     "build": "npm-run-all -p build:js build:css build:html ; npm run inlineTemplatesStyles",
     "build:w": "npm-run-all -p build:js:w build:css:w build:html:w",
     "prestart": "npm run dist",

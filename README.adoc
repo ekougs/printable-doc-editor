@@ -2,6 +2,9 @@
 
 image:https://travis-ci.org/ekougs/printable-doc-editor.svg?branch=continuous-deployment["Build Status", link="https://travis-ci.org/ekougs/printable-doc-editor"]
 
+## Demo
+http://static-printeditor.rhcloud.com/
+
 ## Run karma tests
 :hardbreaks:
 `npm test`
