@@ -1,5 +1,7 @@
 # Printable document editor
 
+image:https://travis-ci.org/ekougs/printable-doc-editor.svg?branch=continuous-deployment["Build Status", link="https://travis-ci.org/ekougs/printable-doc-editor"]
+
 ## Run karma tests
 :hardbreaks:
 `npm test`
