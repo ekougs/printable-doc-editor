@@ -3,6 +3,9 @@
 - scripts.push("https://npmcdn.com/reflect-metadata@0.1.3")
 - scripts.push("https://npmcdn.com/systemjs@0.19.27/dist/system.src.js")
 - scripts.push("sample/systemjs.config.js")
+- var stylesheets = ["sample/main.css"]
+- stylesheets.push("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+- stylesheets.push("https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css")
 
 doctype html
 html
@@ -10,6 +13,8 @@ html
         title= "Card and Flier WYSIWYG Editor Sample"
         base(href="/")
         meta(name="viewport",content="width=device-width, initial-scale=1")
+        each stylesheet in stylesheets
+            link(rel="stylesheet",href=stylesheet)
         each scriptUrl in scripts
             script(src=scriptUrl)
 
