@@ -1,6 +1,15 @@
 language: node_js
 node_js:
-  - "5.0"
+- '5.0'
 after_success:
-  - "npm run dist"
-  - "curl --ftp-create-dirs -T dist -u $FTP_USER:$FTP_PASSWORD ftp://ftp.byethost7.com/htdocs/printable-editor"
+- npm run dist
+deploy:
+  provider: openshift
+  user: $OPENSHIFT_USER
+  password:
+    secure: $OPENSHIFT_PASSWORD
+  app: static
+  domain: printeditor
+  on:
+    repo: ekougs/printable-doc-editor
+    branch: master

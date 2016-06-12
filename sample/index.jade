@@ -1,7 +1,7 @@
-- var scripts = ["node_modules/es6-shim/es6-shim.min.js"]
-- scripts.push("node_modules/zone.js/dist/zone.min.js")
-- scripts.push("node_modules/reflect-metadata/Reflect.js")
-- scripts.push("node_modules/systemjs/dist/system.js")
+- var scripts = ["https://npmcdn.com/core-js/client/shim.min.js"]
+- scripts.push("https://npmcdn.com/zone.js@0.6.12?main=browser")
+- scripts.push("https://npmcdn.com/reflect-metadata@0.1.3")
+- scripts.push("https://npmcdn.com/systemjs@0.19.27/dist/system.src.js")
 - scripts.push("sample/systemjs.config.js")
 
 doctype html
@@ -10,7 +10,6 @@ html
         title= "Card and Flier WYSIWYG Editor Sample"
         base(href="/")
         meta(name="viewport",content="width=device-width, initial-scale=1")
-        link(rel="stylesheet",href="sample/main.css")
         each scriptUrl in scripts
             script(src=scriptUrl)
 

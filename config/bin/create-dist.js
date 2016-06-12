@@ -1,43 +1,30 @@
 'use strict';
 (function () {
+    let path = require('path');
     let fs = require('fs');
     let cpx = require('cpx');
     let del = require('del');
     let assetsLibs = ['bootstrap-sass', 'font-awesome'];
+    let distDir = 'public';
 
-    distVendor();
+    let getDirInDist = (dir) => {
+        dir = dir || '';
+        return path.join(distDir, dir);
+    };
+
     distAssets();
     distApp();
 
     function distApp() {
-        cpx.copy('sample/index.html', 'dist');
-        cpx.copy('print-editor/**/*.js', 'dist/print-editor', null, delTests);
-        cpx.copy('sample/**/*.{js,css}', 'dist/sample');
-    }
-
-    function delTests() {
-        del('dist/src/**/*.{e2e,test}.*');
-    }
-
-    function distVendor() {
-        fs.readFile('package.json', 'utf8', (err, data) => {
-            if (err) {
-                throw err;
-            }
-            let dependencies = JSON.parse(data).dependencies;
-            for (let dependency in dependencies) {
-                if (dependencies.hasOwnProperty(dependency)) {
-                    cpx.copy('node_modules/' + dependency + '/**/**.{js,json,eot,svg,ttf,woff,woff2}',
-                             'dist/node_modules/' + dependency, logErr);
-                }
-            }
-        });
+        cpx.copy('sample/index.html', getDirInDist());
+        cpx.copy('print-editor/src/**/*.js', getDirInDist('print-editor/src'), null);
+        cpx.copy('sample/**/*.{js,css}', getDirInDist('sample'));
     }
 
     function distAssets() {
         assetsLibs.forEach((assetLib) => {
             cpx.copy('node_modules/' + assetLib + '/**/**.{eot,svg,ttf,woff,woff2}',
-                     'dist/node_modules/' + assetLib, logErr);
+                     getDirInDist('node_modules/') + assetLib, logErr);
 
         });
     }
