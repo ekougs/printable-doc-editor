@@ -7,7 +7,7 @@
 	var mkdirp = require('mkdirp').sync;
 	var minimist = require('minimist');
 	var glob = require('glob');
-	var inliner = require('angular2-inline-template-style');
+	var inliner = require('./index.js');
 	var flattener = require('angular2-inline-template-style/bin/flattener');
 	var upper = require('angular2-inline-template-style/bin/upper');
 	var chokidar = require('chokidar');
