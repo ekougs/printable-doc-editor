@@ -8,7 +8,7 @@ browserSync.init({
                          port: 8006
                      },
                      server: {
-                         baseDir: "dist"
+                         baseDir: "public"
                      },
                      watchOptions: {
                          "ignoreInitial": true
