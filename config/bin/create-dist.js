@@ -15,9 +15,9 @@
     distApp();
 
     function distApp() {
-        for(let path in appDirPaths) {
-            if(appDirPaths.hasOwnProperty(path)) {
-                cpx.copy(path, getDirInDist(path.join(distDir, appDirPaths[path])));
+        for(let appDirPath in appDirPaths) {
+            if(appDirPaths.hasOwnProperty(appDirPath)) {
+                cpx.copy(appDirPath, path.join(distDir, appDirPaths[appDirPath]));
             }
         }
     }
