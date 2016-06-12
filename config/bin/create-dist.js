@@ -5,7 +5,6 @@
     let del = require('del');
     let assetsLibs = ['bootstrap-sass', 'font-awesome'];
 
-    distVendor();
     distAssets();
     distApp();
 
@@ -17,21 +16,6 @@
 
     function delTests() {
         del('dist/src/**/*.{e2e,test}.*');
-    }
-
-    function distVendor() {
-        fs.readFile('package.json', 'utf8', (err, data) => {
-            if (err) {
-                throw err;
-            }
-            let dependencies = JSON.parse(data).dependencies;
-            for (let dependency in dependencies) {
-                if (dependencies.hasOwnProperty(dependency)) {
-                    cpx.copy('node_modules/' + dependency + '/**/**.{js,json,eot,svg,ttf,woff,woff2}',
-                             'dist/node_modules/' + dependency, logErr);
-                }
-            }
-        });
     }
 
     function distAssets() {

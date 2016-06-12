@@ -3,4 +3,6 @@ node_js:
   - "5.0"
 after_success:
   - "npm run dist"
-  - "curl --ftp-create-dirs -T dist -u $FTP_USER:$FTP_PASSWORD ftp://ftp.byethost7.com/htdocs/printable-editor"
+  - "cd dist"
+  - "find sample -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.byethost7.com/htdocs/printable-editor/{} \;"
+  - "find print-editor -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASSWORD ftp://ftp.byethost7.com/htdocs/printable-editor/{} \;"
