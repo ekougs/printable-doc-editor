@@ -1,5 +1,12 @@
 # Printable document editor
 
+image:https://travis-ci.org/ekougs/printable-doc-editor.svg?branch=continuous-deployment["Build Status", link="https://travis-ci.org/ekougs/printable-doc-editor"]
+
+## Run karma tests
+:hardbreaks:
+`npm test`
+To display coverage after testing `npm run coverage` and get to `localhost:9875`
+
 ## TODO
 ### Move jade to pug once its stable version is available
 

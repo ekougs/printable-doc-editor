@@ -4,6 +4,7 @@ import {EmConverter} from "./length-converter";
 
 export class BoundingRectangle {
     static trivialYGetter:(position) => number = (position) => position.y;
+
     constructor(private _topLeft:Point, private _size:Size) {
     }
 
@@ -16,8 +17,8 @@ export class BoundingRectangle {
     }
 
     within(position:Point, size:Size, converter:EmConverter,
-           yPositionGetter:(position) => number=BoundingRectangle.trivialYGetter):boolean {
-        return this.withinWidth(position, size, converter) && 
+           yPositionGetter:(position) => number = BoundingRectangle.trivialYGetter):boolean {
+        return this.withinWidth(position, size, converter) &&
             this.withinHeight(position, size, converter, yPositionGetter);
     }
 
@@ -28,10 +29,9 @@ export class BoundingRectangle {
     }
 
     withinHeight(position:Point, size:Size, converter:EmConverter,
-                 yPositionGetter:(position) => number=BoundingRectangle.trivialYGetter):boolean {
+                 yPositionGetter:(position) => number = BoundingRectangle.trivialYGetter):boolean {
         let y = yPositionGetter(position) + this._topLeft.y;
         let furthestPointY = y + size.height(converter);
-        console.log(y, furthestPointY, size.height(converter), this._topLeft.y, this._topLeft.y + this._size.height(converter));
         return this._topLeft.y <= y && furthestPointY <= this._topLeft.y + this._size.height(converter);
     }
 }

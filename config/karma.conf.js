@@ -11,8 +11,7 @@ module.exports = function (config) {
         reporters: ['progress', 'coverage'],
 
         preprocessors: {
-            'src/app/**/!(*.spec)+(.js)': ['coverage'],
-            'src/app/**/*.js': ['sourcemap']
+            'print-editor/src/**/*.js': ['coverage', 'sourcemap']
         },
 
         // Generate json used for remap-istanbul
@@ -33,33 +32,26 @@ module.exports = function (config) {
             'node_modules/zone.js/dist/fake-async-test.js',
             'node_modules/systemjs/dist/system.src.js',
 
-            'sample/systemjs.config.js',
+            'config/systemjs.config.js',
             'config/karma-test-shim.js',
 
-            {pattern: 'src/**/*.js', included: false},
+            {pattern: 'print-editor/**/*.js', included: false},
             {pattern: 'config/angular.test.setup.js', included: false},
 
-            // paths loaded via Angular's component compiler
-            // (these paths need to be rewritten, see proxies section)
-            {pattern: 'src/**/*.html', included: false},
-            {pattern: 'src/**/*.css', included: false},
-
             // paths to support debugging with source maps in dev tools
-            {pattern: 'src/**/*.ts', included: false, watched: false},
-            {pattern: 'src/**/*.js.map', included: false, watched: false}
+            {pattern: 'print-editor/src/**/*.ts', included: false, watched: false}
         ],
 
         // proxied base paths
         proxies: {
             // required for component assests fetched by Angular's compiler
             "/config/": "/base/config/",
-            "/app/": "/base/src/app/",
-            "/src/": "/base/src/",
+            "/print-editor/": "/base/print-editor/",
             "/node_modules/": "/base/node_modules/"
         },
 
         exclude: [
-            "src/**/*.e2e.*"
+            "**/*.e2e.*"
         ],
 
         port: 9876,
