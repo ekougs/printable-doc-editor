@@ -1,10 +1,6 @@
 language: node_js
 node_js:
   - "5.0"
-install:
-  - npm install
-  -
 after_success:
-  "npm run dist"
-deploy:
-  "curl --ftp-create-dirs -T dist -u $FTP_USER:$FTP_PASSWORD ftp://ftp.byethost7.com/htdocs/printable-editor"
+  - "npm run dist"
+  - "curl --ftp-create-dirs -T dist -u $FTP_USER:$FTP_PASSWORD ftp://ftp.byethost7.com/htdocs/printable-editor"
