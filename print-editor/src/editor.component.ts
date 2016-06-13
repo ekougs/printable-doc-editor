@@ -63,29 +63,23 @@ export class EditorComponent {
     }
 
     private onTextFocus(state:TextComponentState) {
-        this.setSelected(true, () => this.destroyText(state));
+        this.selectedElement = true;
+        this.suppressAction = () => {
+            this.destroyText(state);
+        }
     }
 
     private onTextValueChanged(state:TextComponentState, value:string) {
-        // This function is called on text blur
-        this.setSelected(false, () => {
-        });
         // Text component without value is not useful and vainly retains space
         if (!value || "" === value.trim()) {
             this.destroyText(state);
         }
     }
 
-    private setSelected(selected:boolean, suppressAction:() => void) {
-        // Differ remove button enabling/disabling because it happens on focus/blur
-        // Setting it immediately make it impossible to click on the button
-        setTimeout(() => {
-            this.selectedElement = selected;
-            this.suppressAction = suppressAction;
-        }, 20);
-    }
-
     private destroyText(state:TextComponentState) {
+        this.selectedElement = false;
+        this.suppressAction = () => {
+        };
         this.textChildren[state.guid].destroy();
         delete this.textChildren[state.guid];
     }
