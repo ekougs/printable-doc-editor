@@ -4,7 +4,7 @@ div.editor-container
             span.glyphicon.glyphicon-picture
         button.btn.btn-default(type="button",aria-label="Add Text", (click)="openTextElementFromAction()")
             span.glyphicon.glyphicon-text-background
-        button.btn.btn-default(type="button",aria-label="Add Text", (click)="suppressAction()", [disabled]="!selectedElement")
+        button.btn.btn-default(#deleteBtn="", type="button",aria-label="Add Text", [disabled]="!selectedElement")
             span.glyphicon.glyphicon-remove
     div.wrapper.editor-body((dblclick)='openTextElementFromDblClick($event)')
         div(#editorBody="")
