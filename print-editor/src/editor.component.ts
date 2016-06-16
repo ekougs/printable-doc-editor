@@ -15,6 +15,7 @@ import {EmConverterProvider} from "./component/length-converter";
 import {InjectionService} from "./inject/injection.service";
 
 let SVG = require('svg.js');
+// Important to load drag capability
 let draggable = require('svg.draggable.js');
 
 @Component({
@@ -66,7 +67,7 @@ export class EditorComponent implements AfterViewInit {
         };
     }
 
-    openTextElement(state:TextComponentState) {
+    private openTextElement(state:TextComponentState) {
         this._resolver.resolveComponent(TextComponent).then(textCompFactory => {
             let onTextValueChanged = this.onTextValueChanged.bind(this);
             let textComponentContext =
@@ -89,31 +90,30 @@ export class EditorComponent implements AfterViewInit {
     }
 
     private initSelectionListener(text:any) {
-        let clicks = Observable.fromEvent(text, 'click')
-                               .flatMap((event) => {
-                                   return Observable.of(event).delay(200);
-                               });
-
-        clicks.subscribe(() => {
-            this.selectedElement = true;
-            this.suppressFn = () => {
-                this.destroyText(text);
-            };
-        });
+        Observable.fromEvent<any>(text, 'click')
+                  .subscribe((event) => {
+                      event.stopPropagation();
+                      this.selectedElement = true;
+                      this.suppressFn = () => {
+                          this.destroyText(text);
+                      };
+                  });
     }
 
     private initModificationListener(text:any) {
-        let clicks = Observable.fromEvent(text, 'click')
-                               .flatMap((event) => {
-                                   return Observable.of(event).delay(200);
-                               });
-
-        clicks.subscribe(() => {
-            this.selectedElement = true;
-            this.suppressFn = () => {
-                this.destroyText(text);
-            };
-        });
+        Observable.fromEvent<any>(text, 'dblclick')
+                  .subscribe(() => {
+                      event.stopPropagation();
+                      let bounds = text.bbox();
+                      let state = this.textComponentState(bounds.x, bounds.y);
+                      state.value = '';
+                      text.lines().each(function () {
+                          state.value += (this.node.textContent + '\n');
+                      });
+                      state.value = state.value.trim();
+                      this.destroyText(text);
+                      this.openTextElement(state);
+                  });
     }
 
     private createText(value:string, state:TextComponentState) {

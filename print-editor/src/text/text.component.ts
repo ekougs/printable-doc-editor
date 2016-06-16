@@ -16,6 +16,7 @@ export interface TextComponentState {
     leftPx:number;
     width?:string;
     height?:string;
+    value?:string;
 }
 
 @Component({
@@ -30,13 +31,15 @@ export class TextComponent implements AfterViewInit {
 
     constructor(@Inject(VIEW_STATE_TOKEN) private state:TextComponentState,
                 @Inject(ON_VALUE_CHANGED_TOKEN) private onValueChanged:(TextComponentState, String)=>void) {
-        state.width = TextComponent.DEFAULT_SIZE.widthAndUnit();
-        state.height = TextComponent.DEFAULT_SIZE.heightAndUnit();
+        state.width = state.width ? state.width : TextComponent.DEFAULT_SIZE.widthAndUnit();
+        state.height = state.height ? state.height : TextComponent.DEFAULT_SIZE.heightAndUnit();
+        state.value = state.value ? state.value : '';
     }
 
     ngAfterViewInit() {
         let element = this.textCompRef.nativeElement;
         element.focus();
+        this.resizeToContent(element);
 
         const ENTER:number = 13;
         const BACKSPACE:number = 8;
@@ -57,13 +60,17 @@ export class TextComponent implements AfterViewInit {
                                  });
         onEnters.subscribe((key) => {
             if(RESIZE_KEYS.indexOf(key) !== -1) {
-                element.style.height = "1px";
-                element.style.height = (5 + element.scrollHeight) + "px";
+                this.resizeToContent(element);
             }
             if(ESCAPE === key) {
                 this.onValueChanged(this.state, undefined);
             }
         });
+    }
+
+    private resizeToContent(element) {
+        element.style.height = "1px";
+        element.style.height = (5 + element.scrollHeight) + "px";
     }
 
     propagateValueChanged() {
