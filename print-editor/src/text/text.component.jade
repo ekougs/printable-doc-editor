@@ -1,13 +1,10 @@
-div.card-txt(
+textarea.form-control(
     [ngClass]="{edit: edit, readOnly: !edit}",
     [style.top]="state.top",
     [style.left]="state.left",
     [style.width]="state.width",
     [style.height]="state.height",
-    (click)="editMode(textComp)",
-    (blur)="readOnlyMode(textComp)",
-    (focus)="onFocus(state)",
-    [draggable]="",
+    (blur)="propagateValueChanged()",
+    rows="1",
     #textComp=""
         )
-        {{value}}

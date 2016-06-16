@@ -38,6 +38,10 @@ div.editor-body {
   min-height: 220px;
 }
 
+div.editor-body-inner {
+  display: none;
+}
+
 div.text-element {
   position: absolute;
 }

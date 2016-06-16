@@ -15,31 +15,48 @@ var core_1 = require("@angular/core");
 var size_1 = require("../component/size");
 var length_1 = require("../component/length");
 var length_unit_1 = require("../component/length-unit");
-var draggable_directive_1 = require("../draggable.directive");
+var Rx_1 = require("rxjs/Rx");
 exports.VIEW_STATE_TOKEN = new core_1.OpaqueToken('textComponentViewState');
 exports.ON_VALUE_CHANGED_TOKEN = new core_1.OpaqueToken('textComponentOnValueChanged');
 exports.ON_FOCUS_TOKEN = new core_1.OpaqueToken('textComponentOnFocus');
 var TextComponent = (function () {
-    function TextComponent(state, onValueChanged, onFocus) {
+    function TextComponent(state, onValueChanged) {
         this.state = state;
         this.onValueChanged = onValueChanged;
-        this.onFocus = onFocus;
-        this.edit = true;
         state.width = TextComponent.DEFAULT_SIZE.widthAndUnit();
         state.height = TextComponent.DEFAULT_SIZE.heightAndUnit();
     }
     TextComponent.prototype.ngAfterViewInit = function () {
-        this.editMode(this.textCompRef.nativeElement);
+        var _this = this;
+        var element = this.textCompRef.nativeElement;
+        element.focus();
+        var ENTER = 13;
+        var BACKSPACE = 8;
+        var DELETE = 46;
+        var RESIZE_KEYS = [ENTER, BACKSPACE, DELETE];
+        var ESCAPE = 27;
+        var WATCHED_KEYS = [];
+        WATCHED_KEYS.push.apply(WATCHED_KEYS, RESIZE_KEYS);
+        WATCHED_KEYS.push(ESCAPE);
+        var onEnters = Rx_1.Observable.fromEvent(element, 'keyup')
+            .filter(function (event) {
+            return WATCHED_KEYS.indexOf(event.keyCode) !== -1;
+        })
+            .map(function (event) {
+            return event.keyCode;
+        });
+        onEnters.subscribe(function (key) {
+            if (RESIZE_KEYS.indexOf(key) !== -1) {
+                element.style.height = "1px";
+                element.style.height = (5 + element.scrollHeight) + "px";
+            }
+            if (ESCAPE === key) {
+                _this.onValueChanged(_this.state, undefined);
+            }
+        });
     };
-    TextComponent.prototype.editMode = function (textComp) {
-        textComp.contentEditable = true;
-        this.edit = true;
-        textComp.focus();
-    };
-    TextComponent.prototype.readOnlyMode = function (textComp) {
-        this.onValueChanged(this.state, textComp.innerText);
-        textComp.contentEditable = false;
-        this.edit = false;
+    TextComponent.prototype.propagateValueChanged = function () {
+        this.onValueChanged(this.state, this.textCompRef.nativeElement.value);
     };
     TextComponent.DEFAULT_SIZE = new size_1.Size(new length_1.Length(150), new length_1.Length(1.9, length_unit_1.LengthUnit.em));
     __decorate([
@@ -49,16 +66,15 @@ var TextComponent = (function () {
     TextComponent = __decorate([
         core_1.Component({
             selector: 'text',
-            template: '<div [ngClass]="{edit: edit, readOnly: !edit}" [style.top]="state.top" [style.left]="state.left" [style.width]="state.width" [style.height]="state.height" (click)="editMode(textComp)" (blur)="readOnlyMode(textComp)" (focus)="onFocus(state)" [draggable]="" #textComp="" class="card-txt">{{value}}</div>',
-            styles: ['.card-txt {  position: absolute;  overflow: auto;  padding: 4px;  line-height: 1em;  background-color: transparent; }.card-txt.edit {  resize: both;  border: dotted 2px;  border-radius: 5px; }.card-txt.edit:focus {  resize: both;  border: dotted 2px;  border-radius: 5px;  outline: none; }.card-txt.readOnly {  resize: inherit;  border: none; }'],
-            directives: [draggable_directive_1.DraggableDirective]
+            template: '<textarea [ngClass]="{edit: edit, readOnly: !edit}" [style.top]="state.top" [style.left]="state.left" [style.width]="state.width" [style.height]="state.height" (blur)="propagateValueChanged()" rows="1" #textComp="" class="form-control"></textarea>',
+            styles: ['textarea {  position: absolute;  padding: 4px;  background-color: transparent; }'],
+            directives: []
         }),
         __param(0, core_1.Inject(exports.VIEW_STATE_TOKEN)),
-        __param(1, core_1.Inject(exports.ON_VALUE_CHANGED_TOKEN)),
-        __param(2, core_1.Inject(exports.ON_FOCUS_TOKEN)), 
-        __metadata('design:paramtypes', [Object, Function, Function])
+        __param(1, core_1.Inject(exports.ON_VALUE_CHANGED_TOKEN)), 
+        __metadata('design:paramtypes', [Object, Function])
     ], TextComponent);
     return TextComponent;
 }());
 exports.TextComponent = TextComponent;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGV4dC5jb21wb25lbnQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJ0ZXh0LmNvbXBvbmVudC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7O0FBQUEscUJBQW1GLGVBQWUsQ0FBQyxDQUFBO0FBQ25HLHFCQUFtQixtQkFBbUIsQ0FBQyxDQUFBO0FBQ3ZDLHVCQUFxQixxQkFBcUIsQ0FBQyxDQUFBO0FBQzNDLDRCQUF5QiwwQkFBMEIsQ0FBQyxDQUFBO0FBQ3BELG9DQUFpQyx3QkFBd0IsQ0FBQyxDQUFBO0FBRTdDLHdCQUFnQixHQUFlLElBQUksa0JBQVcsQ0FBQyx3QkFBd0IsQ0FBQyxDQUFDO0FBQ3pFLDhCQUFzQixHQUFlLElBQUksa0JBQVcsQ0FBQyw2QkFBNkIsQ0FBQyxDQUFDO0FBQ3BGLHNCQUFjLEdBQWUsSUFBSSxrQkFBVyxDQUFDLHNCQUFzQixDQUFDLENBQUM7QUFnQmxGO0lBS0ksdUJBQThDLEtBQXdCLEVBQ2xCLGNBQWlELEVBQ3pELE9BQWtDO1FBRmhDLFVBQUssR0FBTCxLQUFLLENBQW1CO1FBQ2xCLG1CQUFjLEdBQWQsY0FBYyxDQUFtQztRQUN6RCxZQUFPLEdBQVAsT0FBTyxDQUEyQjtRQUp0RSxTQUFJLEdBQVcsSUFBSSxDQUFDO1FBS3hCLEtBQUssQ0FBQyxLQUFLLEdBQUcsYUFBYSxDQUFDLFlBQVksQ0FBQyxZQUFZLEVBQUUsQ0FBQztRQUN4RCxLQUFLLENBQUMsTUFBTSxHQUFHLGFBQWEsQ0FBQyxZQUFZLENBQUMsYUFBYSxFQUFFLENBQUM7SUFDOUQsQ0FBQztJQUVELHVDQUFlLEdBQWY7UUFDSSxJQUFJLENBQUMsUUFBUSxDQUFDLElBQUksQ0FBQyxXQUFXLENBQUMsYUFBYSxDQUFDLENBQUM7SUFDbEQsQ0FBQztJQUVELGdDQUFRLEdBQVIsVUFBUyxRQUFRO1FBQ2IsUUFBUSxDQUFDLGVBQWUsR0FBRyxJQUFJLENBQUM7UUFDaEMsSUFBSSxDQUFDLElBQUksR0FBRyxJQUFJLENBQUM7UUFDakIsUUFBUSxDQUFDLEtBQUssRUFBRSxDQUFDO0lBQ3JCLENBQUM7SUFFRCxvQ0FBWSxHQUFaLFVBQWEsUUFBUTtRQUNqQixJQUFJLENBQUMsY0FBYyxDQUFDLElBQUksQ0FBQyxLQUFLLEVBQUUsUUFBUSxDQUFDLFNBQVMsQ0FBQyxDQUFDO1FBQ3BELFFBQVEsQ0FBQyxlQUFlLEdBQUcsS0FBSyxDQUFDO1FBQ2pDLElBQUksQ0FBQyxJQUFJLEdBQUcsS0FBSyxDQUFDO0lBQ3RCLENBQUM7SUF6Qk0sMEJBQVksR0FBUSxJQUFJLFdBQUksQ0FBQyxJQUFJLGVBQU0sQ0FBQyxHQUFHLENBQUMsRUFBRSxJQUFJLGVBQU0sQ0FBQyxHQUFHLEVBQUUsd0JBQVUsQ0FBQyxFQUFFLENBQUMsQ0FBQyxDQUFDO0lBQ3JGO1FBQUMsZ0JBQVMsQ0FBQyxVQUFVLEVBQUUsRUFBQyxJQUFJLEVBQUUsaUJBQVUsRUFBQyxDQUFDOztzREFBQTtJQVI5QztRQUFDLGdCQUFTLENBQUM7WUFDSSxRQUFRLEVBQUUsTUFBTTtZQUNoQixXQUFXLEVBQUUscUJBQXFCO1lBQ2xDLFNBQVMsRUFBRSxDQUFDLG9CQUFvQixDQUFDO1lBQ2pDLFVBQVUsRUFBRSxDQUFDLHdDQUFrQixDQUFDO1NBQ25DLENBQUM7bUJBTUksYUFBTSxDQUFDLHdCQUFnQixDQUFDO21CQUN4QixhQUFNLENBQUMsOEJBQXNCLENBQUM7bUJBQzlCLGFBQU0sQ0FBQyxzQkFBYyxDQUFDOztxQkFSMUI7SUE0QmIsb0JBQUM7QUFBRCxDQUFDLEFBM0JELElBMkJDO0FBM0JZLHFCQUFhLGdCQTJCekIsQ0FBQSJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGV4dC5jb21wb25lbnQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJ0ZXh0LmNvbXBvbmVudC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7O0FBQUEscUJBQW1GLGVBQWUsQ0FBQyxDQUFBO0FBQ25HLHFCQUFtQixtQkFBbUIsQ0FBQyxDQUFBO0FBQ3ZDLHVCQUFxQixxQkFBcUIsQ0FBQyxDQUFBO0FBQzNDLDRCQUF5QiwwQkFBMEIsQ0FBQyxDQUFBO0FBQ3BELG1CQUF5QixTQUFTLENBQUMsQ0FBQTtBQUV0Qix3QkFBZ0IsR0FBZSxJQUFJLGtCQUFXLENBQUMsd0JBQXdCLENBQUMsQ0FBQztBQUN6RSw4QkFBc0IsR0FBZSxJQUFJLGtCQUFXLENBQUMsNkJBQTZCLENBQUMsQ0FBQztBQUNwRixzQkFBYyxHQUFlLElBQUksa0JBQVcsQ0FBQyxzQkFBc0IsQ0FBQyxDQUFDO0FBa0JsRjtJQUlJLHVCQUE4QyxLQUF3QixFQUNsQixjQUFpRDtRQUR2RCxVQUFLLEdBQUwsS0FBSyxDQUFtQjtRQUNsQixtQkFBYyxHQUFkLGNBQWMsQ0FBbUM7UUFDakcsS0FBSyxDQUFDLEtBQUssR0FBRyxhQUFhLENBQUMsWUFBWSxDQUFDLFlBQVksRUFBRSxDQUFDO1FBQ3hELEtBQUssQ0FBQyxNQUFNLEdBQUcsYUFBYSxDQUFDLFlBQVksQ0FBQyxhQUFhLEVBQUUsQ0FBQztJQUM5RCxDQUFDO0lBRUQsdUNBQWUsR0FBZjtRQUFBLGlCQThCQztRQTdCRyxJQUFJLE9BQU8sR0FBRyxJQUFJLENBQUMsV0FBVyxDQUFDLGFBQWEsQ0FBQztRQUM3QyxPQUFPLENBQUMsS0FBSyxFQUFFLENBQUM7UUFFaEIsSUFBTSxLQUFLLEdBQVUsRUFBRSxDQUFDO1FBQ3hCLElBQU0sU0FBUyxHQUFVLENBQUMsQ0FBQztRQUMzQixJQUFNLE1BQU0sR0FBVSxFQUFFLENBQUM7UUFDekIsSUFBTSxXQUFXLEdBQUcsQ0FBQyxLQUFLLEVBQUUsU0FBUyxFQUFFLE1BQU0sQ0FBQyxDQUFDO1FBQy9DLElBQU0sTUFBTSxHQUFVLEVBQUUsQ0FBQztRQUV6QixJQUFNLFlBQVksR0FBRyxFQUFFLENBQUM7UUFDeEIsWUFBWSxDQUFDLElBQUksT0FBakIsWUFBWSxFQUFTLFdBQVcsQ0FBQyxDQUFDO1FBQ2xDLFlBQVksQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLENBQUM7UUFFMUIsSUFBSSxRQUFRLEdBQUcsZUFBVSxDQUFDLFNBQVMsQ0FBTSxPQUFPLEVBQUUsT0FBTyxDQUFDO2FBQ2hDLE1BQU0sQ0FBQyxVQUFDLEtBQUs7WUFDVixNQUFNLENBQUMsWUFBWSxDQUFDLE9BQU8sQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUM7UUFDdEQsQ0FBQyxDQUFDO2FBQ0QsR0FBRyxDQUFDLFVBQUMsS0FBSztZQUNQLE1BQU0sQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDO1FBQ3pCLENBQUMsQ0FBQyxDQUFDO1FBQzVCLFFBQVEsQ0FBQyxTQUFTLENBQUMsVUFBQyxHQUFHO1lBQ25CLEVBQUUsQ0FBQSxDQUFDLFdBQVcsQ0FBQyxPQUFPLENBQUMsR0FBRyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDO2dCQUNqQyxPQUFPLENBQUMsS0FBSyxDQUFDLE1BQU0sR0FBRyxLQUFLLENBQUM7Z0JBQzdCLE9BQU8sQ0FBQyxLQUFLLENBQUMsTUFBTSxHQUFHLENBQUMsQ0FBQyxHQUFHLE9BQU8sQ0FBQyxZQUFZLENBQUMsR0FBRyxJQUFJLENBQUM7WUFDN0QsQ0FBQztZQUNELEVBQUUsQ0FBQSxDQUFDLE1BQU0sS0FBSyxHQUFHLENBQUMsQ0FBQyxDQUFDO2dCQUNoQixLQUFJLENBQUMsY0FBYyxDQUFDLEtBQUksQ0FBQyxLQUFLLEVBQUUsU0FBUyxDQUFDLENBQUM7WUFDL0MsQ0FBQztRQUNMLENBQUMsQ0FBQyxDQUFDO0lBQ1AsQ0FBQztJQUVELDZDQUFxQixHQUFyQjtRQUNJLElBQUksQ0FBQyxjQUFjLENBQUMsSUFBSSxDQUFDLEtBQUssRUFBRSxJQUFJLENBQUMsV0FBVyxDQUFDLGFBQWEsQ0FBQyxLQUFLLENBQUMsQ0FBQztJQUMxRSxDQUFDO0lBM0NNLDBCQUFZLEdBQVEsSUFBSSxXQUFJLENBQUMsSUFBSSxlQUFNLENBQUMsR0FBRyxDQUFDLEVBQUUsSUFBSSxlQUFNLENBQUMsR0FBRyxFQUFFLHdCQUFVLENBQUMsRUFBRSxDQUFDLENBQUMsQ0FBQztJQUNyRjtRQUFDLGdCQUFTLENBQUMsVUFBVSxFQUFFLEVBQUMsSUFBSSxFQUFFLGlCQUFVLEVBQUMsQ0FBQzs7c0RBQUE7SUFSOUM7UUFBQyxnQkFBUyxDQUFDO1lBQ0ksUUFBUSxFQUFFLE1BQU07WUFDaEIsV0FBVyxFQUFFLHFCQUFxQjtZQUNsQyxTQUFTLEVBQUUsQ0FBQyxvQkFBb0IsQ0FBQztZQUNqQyxVQUFVLEVBQUUsRUFBRTtTQUNqQixDQUFDO21CQUtJLGFBQU0sQ0FBQyx3QkFBZ0IsQ0FBQzttQkFDeEIsYUFBTSxDQUFDLDhCQUFzQixDQUFDOztxQkFObEM7SUE4Q2Isb0JBQUM7QUFBRCxDQUFDLEFBN0NELElBNkNDO0FBN0NZLHFCQUFhLGdCQTZDekIsQ0FBQSJ9

@@ -7,18 +7,15 @@ import {
     AfterViewInit,
     provide,
     ViewChild
-} from '@angular/core';
-import {
-    TextComponent,
-    TextComponentState,
-    VIEW_STATE_TOKEN,
-    ON_VALUE_CHANGED_TOKEN,
-    ON_FOCUS_TOKEN
-} from './text/text.component';
-import {ComponentService} from './component/component.service';
-import {EmConverterProvider} from './component/length-converter';
-import {InjectionService} from './inject/injection.service';
-import {Observable, Subject} from 'rxjs/Rx';
+} from "@angular/core";
+import {Observable} from "rxjs/Rx";
+import {TextComponent, TextComponentState, VIEW_STATE_TOKEN, ON_VALUE_CHANGED_TOKEN} from "./text/text.component";
+import {ComponentService} from "./component/component.service";
+import {EmConverterProvider} from "./component/length-converter";
+import {InjectionService} from "./inject/injection.service";
+
+let SVG = require('svg.js');
+let draggable = require('svg.draggable.js');
 
 @Component({
                selector: 'editor',
@@ -30,43 +27,26 @@ import {Observable, Subject} from 'rxjs/Rx';
 export class EditorComponent implements AfterViewInit {
     @ViewChild('editorBody', {read: ViewContainerRef}) private editorBody:ViewContainerRef;
     @ViewChild('deleteBtn', {read: ElementRef}) private deleteBtn:ElementRef;
-    private selectSubject:Subject<TextComponentState> = new Subject<TextComponentState>();
-    private deselectSubject:Subject<TextComponentState> = new Subject<TextComponentState>();
-    private textChildren:{[guid:string]:ComponentRef<TextComponent>} = {};
-    private selectedElement:boolean = false;
+    @ViewChild('editorBodyInner', {read: ViewContainerRef}) private editorBodyInner:ViewContainerRef;
+    private textInputChildren:{[guid:string]:ComponentRef<TextComponent>} = {};
+    private _doc;
+    private suppressFn:() => void = () => {
+    };
+    private selectedElement = false;
 
     constructor(private _viewContainer:ViewContainerRef, private _resolver:ComponentResolver,
                 private _compService:ComponentService, private _injService:InjectionService) {
     }
 
+
     ngAfterViewInit() {
-        const DESELECT = 'DESELECT';
-        const SELECT = 'SELECT';
-        const DELETE = 'DELETE';
+        this.initSvgDoc();
+    }
 
-        let deselects = Observable.from(this.deselectSubject).flatMap((deselect) => {
-            return Observable.of([DESELECT, deselect]).delay(200);
-        });
-        let selects = Observable.from(this.selectSubject).flatMap((select) => {
-            return Observable.of([SELECT, select]);
-        });
-        let deletes = Observable.fromEvent(this.deleteBtn.nativeElement, 'click').flatMap((click) => {
-            return Observable.of([DELETE, click]);
-        });
-        let deselectDeleteSeq = deselects.merge(deletes).merge(selects);
-
-        let last;
-        deselectDeleteSeq.subscribe((current) => {
-            let typeCur = current[0];
-            if(SELECT === typeCur) {
-                this.selectElement();
-            } else if(DESELECT === typeCur) {
-                this.deselectElement();
-            } else if(DELETE === typeCur) {
-                this.destroyText(last[1]);
-            }
-            last = current;
-        });
+    private initSvgDoc() {
+        let editorBodyNative = this.editorBody.element.nativeElement;
+        let bounds = editorBodyNative.getBoundingClientRect();
+        this._doc = SVG(editorBodyNative).size(bounds.width, bounds.height);
     }
 
     openTextElementFromDblClick(clickEvent) {
@@ -76,56 +56,88 @@ export class EditorComponent implements AfterViewInit {
         this.openTextElement(state);
     }
 
-    openTextElementFromAction(event) {
-        let state = this.textComponentState(event.x, event.y);
-        this.openTextElement(state);
-    }
-
     private textComponentState(left:number, top:number):TextComponentState {
         return {
             guid: this._injService.guid(),
             left: this._compService.pxSize(left),
-            top: this._compService.pxSize(top)
+            top: this._compService.pxSize(top),
+            leftPx: left,
+            topPx: top
         };
     }
 
     openTextElement(state:TextComponentState) {
         this._resolver.resolveComponent(TextComponent).then(textCompFactory => {
             let onTextValueChanged = this.onTextValueChanged.bind(this);
-            let onTextFocus = this.onTextFocus.bind(this);
             let textComponentContext =
                 this._injService.injector(this._viewContainer.injector,
                                           provide(VIEW_STATE_TOKEN, {useValue: state}),
-                                          provide(ON_VALUE_CHANGED_TOKEN, {useValue: onTextValueChanged}),
-                                          provide(ON_FOCUS_TOKEN, {useValue: onTextFocus}));
-            this.textChildren[state.guid] =
-                this.editorBody.createComponent(textCompFactory, undefined, textComponentContext);
+                                          provide(ON_VALUE_CHANGED_TOKEN, {useValue: onTextValueChanged}));
+            this.textInputChildren[state.guid] =
+                this.editorBodyInner.createComponent(textCompFactory, undefined, textComponentContext);
         });
     }
 
-    private onTextFocus(state:TextComponentState) {
-        this.selectSubject.next(state);
-    }
-
     private onTextValueChanged(state:TextComponentState, value:string) {
-        this.deselectSubject.next(state);
-        // Text component without value is not useful and vainly retains space
-        if (!value || '' === value.trim()) {
-            this.destroyText(state);
+        this.destroyTextInput(state);
+        if (!value || '' === value) {
+            return;
         }
+        let text = this.createText(value, state);
+        this.initSelectionListener(text);
+        this.initModificationListener(text);
     }
 
-    private destroyText(state) {
-        this.deselectElement();
-        this.textChildren[state.guid].destroy();
-        delete this.textChildren[state.guid];
+    private initSelectionListener(text:any) {
+        let clicks = Observable.fromEvent(text, 'click')
+                               .flatMap((event) => {
+                                   return Observable.of(event).delay(200);
+                               });
+
+        clicks.subscribe(() => {
+            this.selectedElement = true;
+            this.suppressFn = () => {
+                this.destroyText(text);
+            };
+        });
     }
 
-    private selectElement() {
-        this.selectedElement = true;
+    private initModificationListener(text:any) {
+        let clicks = Observable.fromEvent(text, 'click')
+                               .flatMap((event) => {
+                                   return Observable.of(event).delay(200);
+                               });
+
+        clicks.subscribe(() => {
+            this.selectedElement = true;
+            this.suppressFn = () => {
+                this.destroyText(text);
+            };
+        });
     }
 
-    private deselectElement() {
+    private createText(value:string, state:TextComponentState) {
+        return this._doc.text((add) => {
+            let lines = value.split('\n');
+            lines.forEach((line) => {
+                add.tspan(line).newLine();
+            });
+        }).x(state.leftPx).y(state.topPx).draggable();
+    }
+
+    private destroyTextInput(state) {
+        this.textInputChildren[state.guid].destroy();
+        delete this.textInputChildren[state.guid];
+    }
+
+    private destroyText(element) {
+        element.remove();
+        this.deselectText();
+    }
+
+    private deselectText() {
+        this.suppressFn = () => {
+        };
         this.selectedElement = false;
     }
 }

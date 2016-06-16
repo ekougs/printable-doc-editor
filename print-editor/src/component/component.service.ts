@@ -34,12 +34,11 @@ export class ComponentService {
      * @param parent: parent of the component being positioned, default value is event's current target
      * @returns {Point} the corrected position
      */
-    getPositionWithinParentElement(event, componentSize:Size, parent = event.currentTarget,
-                                   yPositionGetter:(position) => number = BoundingRectangle.trivialYGetter):Point {
+    getPositionWithinParentElement(event, componentSize:Size, parent = event.currentTarget):Point {
         let position:Point = this.getPosition(event, parent);
         let bounds = this.getParentBoundingRectangle(parent);
         return this.getPositionWithinBounds(position, componentSize, bounds,
-                                            this.provider.converter(event.currentTarget), yPositionGetter);
+                                            this.provider.converter(event.currentTarget));
     }
 
     /**
@@ -47,14 +46,12 @@ export class ComponentService {
      * @param event: a mouse event
      * @param componentSize: size of the element being positioned
      * @param parent: parent of the component being positioned, default value is event's current target
-     * @param yPositionGetter : How to get y using position if not trivial
      * @returns {Point} the corrected position
      */
-    positionWithinParentElement(event, componentSize:Size, parent = event.currentTarget,
-                                yPositionGetter:(position) => number = BoundingRectangle.trivialYGetter):boolean {
+    positionWithinParentElement(event, componentSize:Size, parent = event.currentTarget):boolean {
         let position:Point = this.getPosition(event, parent);
         let bounds = this.getParentBoundingRectangle(parent);
-        return bounds.within(position, componentSize, this.provider.converter(event.currentTarget), yPositionGetter);
+        return bounds.within(position, componentSize, this.provider.converter(event.currentTarget));
     }
 
     /**
@@ -86,9 +83,8 @@ export class ComponentService {
         };
     }
 
-    private getPositionWithinBounds(position:Point, size:Size, bounds:BoundingRectangle, converter:EmConverter,
-                                    yPositionGetter:(position) => number = BoundingRectangle.trivialYGetter):Point {
-        if (bounds.within(position, size, converter, yPositionGetter)) {
+    private getPositionWithinBounds(position:Point, size:Size, bounds:BoundingRectangle, converter:EmConverter):Point {
+        if (bounds.within(position, size, converter)) {
             return position;
         }
 
@@ -101,7 +97,7 @@ export class ComponentService {
 
         let y = position.y;
         let top:number = y;
-        if (!bounds.withinHeight(position, size, converter, yPositionGetter)) {
+        if (!bounds.withinHeight(position, size, converter)) {
             // Because y is relative to parent
             top = y - (y + size.height(converter) - bounds.size.height(converter)) - 5;
         }
