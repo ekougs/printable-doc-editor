@@ -1,10 +1,6 @@
 div.editor-container
     div.editor-toolbar
-        button.btn.btn-default(type="button",aria-label="Add Image")
-            span.glyphicon.glyphicon-picture
-        button.btn.btn-default(type="button",aria-label="Add Text", (click)="openTextElementFromAction()")
-            span.glyphicon.glyphicon-text-background
-        button.btn.btn-default(#deleteBtn="", type="button",aria-label="Add Text", [disabled]="!selectedElement")
-            span.glyphicon.glyphicon-remove
-    div.wrapper.editor-body((dblclick)='openTextElementFromDblClick($event)')
-        div(#editorBody="")
+        button.btn.btn-default(#deleteBtn="", type="button",aria-label="Add Text", [disabled]="!selectedElement", (click)="suppressFn()")
+           span.glyphicon.glyphicon-remove
+    div.wrapper.editor-body((dblclick)='openTextElementFromDblClick($event)', #editorBody='')
+        div.editor-body-inner(#editorBodyInner='')

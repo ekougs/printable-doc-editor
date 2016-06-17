@@ -10,6 +10,8 @@
         'rxjs': 'https://npmcdn.com/rxjs@5.0.0-beta.6',
         'ts': 'https://npmcdn.com/plugin-typescript@4.0.10/lib/plugin.js',
         'typescript': 'https://npmcdn.com/typescript@1.8.10/lib/typescript.js',
+        'svg.js': 'https://npmcdn.com/svg.js@2.3.0/dist/svg.min.js',
+        'svg.draggable.js': 'https://npmcdn.com/svg.draggable.js@2.2.0/dist/svg.draggable.min.js'
     };
 
     //packages tells the System loader how to load when no filename and/or no extension

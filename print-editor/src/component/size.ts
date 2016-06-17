@@ -21,3 +21,7 @@ export class Size {
         return this._height.toString();
     }
 }
+
+export function size(width:number, height:number):Size {
+    return new Size(new Length(width), new Length(height));
+}
