@@ -46,6 +46,24 @@ div.text-element {
   position: absolute;
 }
 
+button.file-chooser {
+  position: relative;
+  overflow: hidden;
+  width: 3em;
+  height: 2.5em;
+}
+
+button.file-chooser input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  height: 100%;
+  line-height: 30px;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+}
+
 :host /deep/ {
 
   [draggable] {

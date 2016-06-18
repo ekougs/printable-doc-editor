@@ -6,7 +6,6 @@ import {Observable} from "rxjs/Rx";
 
 export const VIEW_STATE_TOKEN:OpaqueToken = new OpaqueToken('textComponentViewState');
 export const ON_VALUE_CHANGED_TOKEN:OpaqueToken = new OpaqueToken('textComponentOnValueChanged');
-export const ON_FOCUS_TOKEN:OpaqueToken = new OpaqueToken('textComponentOnFocus');
 
 export interface TextComponentState {
     guid:string;
