@@ -28,6 +28,7 @@ let draggable = require('svg.draggable.js');
 export class EditorComponent implements AfterViewInit {
     @ViewChild('editorBody', {read: ViewContainerRef}) private editorBody:ViewContainerRef;
     @ViewChild('deleteBtn', {read: ElementRef}) private deleteBtn:ElementRef;
+    @ViewChild('fileInput', {read: ElementRef}) private imageInput:ElementRef;
     @ViewChild('editorBodyInner', {read: ViewContainerRef}) private editorBodyInner:ViewContainerRef;
     private textInputChildren:{[guid:string]:ComponentRef<TextComponent>} = {};
     private _doc;
@@ -42,12 +43,35 @@ export class EditorComponent implements AfterViewInit {
 
     ngAfterViewInit() {
         this.initSvgDoc();
+        this.initImageInputListener();
     }
 
     private initSvgDoc() {
         let editorBodyNative = this.editorBody.element.nativeElement;
         let bounds = editorBodyNative.getBoundingClientRect();
         this._doc = SVG(editorBodyNative).size(bounds.width, bounds.height);
+    }
+
+    private initImageInputListener() {
+        let width = 250;
+        let fileChanges = Observable.fromEvent<any>(this.imageInput.nativeElement, 'change')
+                                    .flatMap((event) => {
+                                        return event.target.files;
+                                    });
+        fileChanges.subscribe((file:any) => {
+            var reader = new FileReader();
+            reader.onload = (event:any) => {
+                let image = this._doc.image((this._injService.guid()));
+                image.load(event.target.result)
+                     .loaded((loader) => {
+                         image.height(loader.ratio * width).width(width);
+                     })
+                     .x(10)
+                     .y(10)
+                     .draggable();
+            };
+            reader.readAsDataURL(file);
+        });
     }
 
     openTextElementFromDblClick(clickEvent) {
@@ -89,7 +113,7 @@ export class EditorComponent implements AfterViewInit {
         this.initModificationListener(text);
     }
 
-    private initSelectionListener(text:any) {
+    private initSelectionListener(text) {
         Observable.fromEvent<any>(text, 'click')
                   .subscribe((event) => {
                       event.stopPropagation();
