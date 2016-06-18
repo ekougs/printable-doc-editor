@@ -44,6 +44,8 @@ export class EditorComponent implements AfterViewInit {
     ngAfterViewInit() {
         this.initSvgDoc();
         this.initImageInputListener();
+        Observable.fromEvent<any>(this.editorBody.element.nativeElement, 'click')
+                  .subscribe(this.deselectElement.bind(this);
     }
 
     private initSvgDoc() {
@@ -53,7 +55,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     private initImageInputListener() {
-        let width = 250;
+        const width = 250;
         let fileChanges = Observable.fromEvent<any>(this.imageInput.nativeElement, 'change')
                                     .flatMap((event) => {
                                         return event.target.files;
@@ -61,17 +63,22 @@ export class EditorComponent implements AfterViewInit {
         fileChanges.subscribe((file:any) => {
             var reader = new FileReader();
             reader.onload = (event:any) => {
-                let image = this._doc.image((this._injService.guid()));
-                image.load(event.target.result)
-                     .loaded((loader) => {
-                         image.height(loader.ratio * width).width(width);
-                     })
-                     .x(10)
-                     .y(10)
-                     .draggable();
+                this.openImageElement(event, width);
             };
             reader.readAsDataURL(file);
         });
+    }
+
+    private openImageElement(event:any, width:number) {
+        let image = this._doc.image((this._injService.guid()));
+        image.load(event.target.result)
+             .loaded((loader) => {
+                 image.height(loader.ratio * width).width(width);
+             })
+             .x(10)
+             .y(10)
+             .draggable();
+        this.initSelectionListener(image);
     }
 
     openTextElementFromDblClick(clickEvent) {
@@ -110,21 +117,21 @@ export class EditorComponent implements AfterViewInit {
         }
         let text = this.createText(value, state);
         this.initSelectionListener(text);
-        this.initModificationListener(text);
+        this.initTextModificationListener(text);
     }
 
-    private initSelectionListener(text) {
-        Observable.fromEvent<any>(text, 'click')
+    private initSelectionListener(element:any) {
+        Observable.fromEvent<any>(element, 'click')
                   .subscribe((event) => {
                       event.stopPropagation();
                       this.selectedElement = true;
                       this.suppressFn = () => {
-                          this.destroyText(text);
+                          this.destroySVGElement(element);
                       };
                   });
     }
 
-    private initModificationListener(text:any) {
+    private initTextModificationListener(text:any) {
         Observable.fromEvent<any>(text, 'dblclick')
                   .subscribe(() => {
                       event.stopPropagation();
@@ -135,7 +142,7 @@ export class EditorComponent implements AfterViewInit {
                           state.value += (this.node.textContent + '\n');
                       });
                       state.value = state.value.trim();
-                      this.destroyText(text);
+                      this.destroySVGElement(text);
                       this.openTextElement(state);
                   });
     }
@@ -154,12 +161,12 @@ export class EditorComponent implements AfterViewInit {
         delete this.textInputChildren[state.guid];
     }
 
-    private destroyText(element) {
+    private destroySVGElement(element) {
         element.remove();
-        this.deselectText();
+        this.deselectElement();
     }
 
-    private deselectText() {
+    private deselectElement() {
         this.suppressFn = () => {
         };
         this.selectedElement = false;
