@@ -11,7 +11,9 @@
         'ts': 'https://npmcdn.com/plugin-typescript@4.0.10/lib/plugin.js',
         'typescript': 'https://npmcdn.com/typescript@1.8.10/lib/typescript.js',
         'svg.js': 'https://npmcdn.com/svg.js@2.3.0/dist/svg.min.js',
-        'svg.draggable.js': 'https://npmcdn.com/svg.draggable.js@2.2.0/dist/svg.draggable.min.js'
+        'svg.draggable.js': 'https://npmcdn.com/svg.draggable.js@2.2.0/dist/svg.draggable.min.js',
+        'svg.select.js': 'https://npmcdn.com/svg.select.js@2.0.3/dist/svg.select.min.js',
+        'svg.resize.js': 'https://npmcdn.com/svg.resize.js@1.2.0/dist/svg.resize.min.js'
     };
 
     //packages tells the System loader how to load when no filename and/or no extension

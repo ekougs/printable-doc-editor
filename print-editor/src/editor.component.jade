@@ -1,6 +1,6 @@
 div.editor-container
     div.editor-toolbar
-        button.btn.btn-default(#deleteBtn="", type="button",aria-label="Add Text", [disabled]="!selectedElement", (click)="suppressFn()")
+        button.btn.btn-default(#deleteBtn="", type="button",aria-label="Add Text", [disabled]="!selectedElement", (click)="deleteElements()")
            span.glyphicon.glyphicon-remove
         button.btn.btn-default.file-chooser(type="button",aria-label="Add Picture")
            span.glyphicon.glyphicon-picture
