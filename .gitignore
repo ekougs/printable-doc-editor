@@ -15,9 +15,10 @@ logipharma-*/
 .editorconfig
 
 # Generated sources
-*.css
+print-editor/**/*.css
 print-editor/**/*.js
 print-editor/**/*.js.map
+sample/**/*.css
 sample/**/*.js
 sample/**/*.js.map
 config/angular.test.setup.js
